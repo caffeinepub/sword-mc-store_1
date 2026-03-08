@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Press Start 2P — pixel/Minecraft font */
+@font-face {
+  font-family: "Press Start 2P";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/PressStart2P.woff2") format("woff2");
+}
+
+@layer base {
+  :root {
+    --radius: 0.25rem;
+
+    /* Minecraft dark theme — deep forest night */
+    --background: 0.1 0.02 145;
+    --foreground: 0.93 0.02 120;
+    --card: 0.14 0.025 145;
+    --card-foreground: 0.93 0.02 120;
+    --popover: 0.16 0.02 145;
+    --popover-foreground: 0.93 0.02 120;
+    --primary: 0.72 0.22 142;
+    --primary-foreground: 0.1 0.02 145;
+    --secondary: 0.2 0.02 145;
+    --secondary-foreground: 0.85 0.02 120;
+    --muted: 0.18 0.02 145;
+    --muted-foreground: 0.55 0.03 120;
+    --accent: 0.72 0.22 142;
+    --accent-foreground: 0.1 0.02 145;
+    --destructive: 0.62 0.25 25;
+    --destructive-foreground: 0.98 0 0;
+    --border: 0.25 0.04 145;
+    --input: 0.22 0.03 145;
+    --ring: 0.72 0.22 142;
+
+    /* Chart colors */
+    --chart-1: 0.72 0.22 142;
+    --chart-2: 0.65 0.2 60;
+    --chart-3: 0.6 0.22 270;
+    --chart-4: 0.62 0.25 25;
+    --chart-5: 0.7 0.18 200;
+
+    /* Sidebar */
+    --sidebar: 0.12 0.025 145;
+    --sidebar-foreground: 0.93 0.02 120;
+    --sidebar-primary: 0.72 0.22 142;
+    --sidebar-primary-foreground: 0.1 0.02 145;
+    --sidebar-accent: 0.2 0.025 145;
+    --sidebar-accent-foreground: 0.85 0.02 120;
+    --sidebar-border: 0.25 0.04 145;
+    --sidebar-ring: 0.72 0.22 142;
+
+    /* Custom Minecraft tokens */
+    --mc-green: 0.72 0.22 142;
+    --mc-gold: 0.78 0.18 72;
+    --mc-red: 0.62 0.25 25;
+    --mc-blue: 0.6 0.22 250;
+    --mc-purple: 0.62 0.25 305;
+    --mc-dark-bg: 0.08 0.02 145;
+    --mc-card-bg: 0.13 0.02 145;
+    --mc-card-bg-deep: 0.1 0.02 145;
+    --mc-border: 0.25 0.04 145;
+    --mc-grass: 0.52 0.2 142;
+    --mc-dirt: 0.42 0.1 60;
+  }
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-color: #080d08;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ── Minecraft pixel background pattern ──────────────────────────────────── */
+.mc-bg {
+  background-color: #080d08;
+  background-image:
+    radial-gradient(circle at 20% 80%, oklch(0.18 0.08 142 / 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, oklch(0.12 0.05 250 / 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, oklch(0.1 0.03 305 / 0.1) 0%, transparent 60%);
+}
+
+/* ── Pixel grid overlay texture ─────────────────────────────────────────── */
+.mc-grid {
+  background-image:
+    linear-gradient(oklch(0.4 0.15 142 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.4 0.15 142 / 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ── Pixel font helper ────────────────────────────────────────────────────── */
+.font-pixel {
+  font-family: "Press Start 2P", monospace;
+  line-height: 1.8;
+}
+
+/* ── Minecraft-style button ──────────────────────────────────────────────── */
+.mc-btn {
+  font-family: "Press Start 2P", monospace;
+  image-rendering: pixelated;
+  position: relative;
+  border-style: solid;
+  border-width: 3px;
+  transition: all 0.1s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mc-btn:active {
+  transform: translateY(2px);
+  filter: brightness(0.85);
+}
+
+/* ── Rank card glow animations ───────────────────────────────────────────── */
+@keyframes glow-green {
+  0%, 100% { box-shadow: 0 0 10px oklch(0.72 0.22 142 / 0.4), 0 0 30px oklch(0.72 0.22 142 / 0.15); }
+  50% { box-shadow: 0 0 20px oklch(0.72 0.22 142 / 0.7), 0 0 50px oklch(0.72 0.22 142 / 0.3); }
+}
+
+@keyframes glow-blue {
+  0%, 100% { box-shadow: 0 0 10px oklch(0.6 0.22 250 / 0.4), 0 0 30px oklch(0.6 0.22 250 / 0.15); }
+  50% { box-shadow: 0 0 20px oklch(0.6 0.22 250 / 0.7), 0 0 50px oklch(0.6 0.22 250 / 0.3); }
+}
+
+@keyframes glow-gold {
+  0%, 100% { box-shadow: 0 0 10px oklch(0.78 0.18 72 / 0.5), 0 0 30px oklch(0.78 0.18 72 / 0.2); }
+  50% { box-shadow: 0 0 25px oklch(0.78 0.18 72 / 0.8), 0 0 60px oklch(0.78 0.18 72 / 0.4); }
+}
+
+@keyframes glow-red {
+  0%, 100% { box-shadow: 0 0 10px oklch(0.62 0.25 25 / 0.4), 0 0 30px oklch(0.62 0.25 25 / 0.15); }
+  50% { box-shadow: 0 0 20px oklch(0.62 0.25 25 / 0.7), 0 0 50px oklch(0.62 0.25 25 / 0.3); }
+}
+
+@keyframes glow-purple {
+  0%, 100% { box-shadow: 0 0 15px oklch(0.62 0.25 305 / 0.5), 0 0 40px oklch(0.62 0.25 305 / 0.2), inset 0 0 20px oklch(0.62 0.25 305 / 0.05); }
+  50% { box-shadow: 0 0 30px oklch(0.62 0.25 305 / 0.8), 0 0 80px oklch(0.62 0.25 305 / 0.4), inset 0 0 30px oklch(0.62 0.25 305 / 0.1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float-up {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pixel-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.animate-glow-green { animation: glow-green 3s ease-in-out infinite; }
+.animate-glow-blue { animation: glow-blue 3s ease-in-out infinite; }
+.animate-glow-gold { animation: glow-gold 2.5s ease-in-out infinite; }
+.animate-glow-red { animation: glow-red 3s ease-in-out infinite; }
+.animate-glow-purple { animation: glow-purple 2s ease-in-out infinite; }
+.animate-float { animation: float-up 3s ease-in-out infinite; }
+.animate-pixel-pulse { animation: pixel-pulse 1.5s ease-in-out infinite; }
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.62 0.25 305 / 0) 0%,
+    oklch(0.75 0.15 305 / 0.4) 50%,
+    oklch(0.62 0.25 305 / 0) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ── Grass dirt border ────────────────────────────────────────────────────── */
+.mc-grass-border {
+  border-top: 8px solid #4a7c3f;
+  border-bottom: 8px solid #6b4f2a;
+  background: linear-gradient(to bottom, #4a7c3f 8px, #6b4f2a 8px, #6b4f2a 16px);
+}
+
+/* ── Dirt texture blocks ─────────────────────────────────────────────────── */
+.mc-dirt-block {
+  background-color: #5a3a1a;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      oklch(0 0 0 / 0.2) 3px,
+      oklch(0 0 0 / 0.2) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      oklch(0 0 0 / 0.2) 3px,
+      oklch(0 0 0 / 0.2) 4px
+    );
+}
+
+/* ── Server IP box ────────────────────────────────────────────────────────── */
+.mc-ip-box {
+  background: oklch(0.08 0.02 145);
+  border: 2px solid oklch(0.72 0.22 142);
+  box-shadow: 0 0 12px oklch(0.72 0.22 142 / 0.3), inset 0 0 8px oklch(0.72 0.22 142 / 0.05);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.75rem;
+  color: oklch(0.85 0.2 142);
+  letter-spacing: 0.1em;
+}
+
+/* ── Page transitions ─────────────────────────────────────────────────────── */
+.page-enter {
+  animation: page-in 0.3s ease-out forwards;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
