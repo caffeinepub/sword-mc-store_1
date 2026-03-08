@@ -129,11 +129,10 @@ export default function HomePage({
             className="relative"
           >
             <img
-              src="/assets/generated/swordmc-logo.dim_600x200.png"
+              src="/assets/uploads/Picsart_26-03-05_10-18-43-798-1.png"
               alt="SWORD MC"
               className="max-w-[420px] sm:max-w-[500px] w-full h-auto"
               style={{
-                imageRendering: "pixelated",
                 filter:
                   "drop-shadow(0 0 20px oklch(0.72 0.22 142 / 0.6)) drop-shadow(0 0 60px oklch(0.72 0.22 142 / 0.3))",
               }}

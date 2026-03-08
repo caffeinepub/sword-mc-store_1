@@ -8,9 +8,9 @@ import List "mo:core/List";
 import Iter "mo:core/Iter";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+
 actor {
   public type RankConfig = {
     name : Text;

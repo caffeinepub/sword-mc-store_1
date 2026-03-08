@@ -96,6 +96,40 @@ export default function UpiPaymentModal({
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
+  // Compress image to a small JPEG data URL (max ~300KB)
+  function compressImage(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        const MAX_DIM = 800;
+        let { width, height } = img;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          if (width > height) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          } else {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Canvas not supported"));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.6));
+      };
+      img.onerror = reject;
+      img.src = objectUrl;
+    });
+  }
+
   async function handlePaid() {
     setErrorMsg("");
     setUsernameError("");
@@ -127,19 +161,17 @@ export default function UpiPaymentModal({
 
     setIsSubmitting(true);
     try {
-      // Convert screenshot to base64
-      const base64DataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target?.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(screenshotFile!);
-      });
+      // Compress screenshot before sending to stay within ICP message limits
+      const base64DataUrl = await compressImage(screenshotFile!);
+
+      // Strip currency symbols so backend price check passes (e.g. "₹49" -> "49")
+      const numericPrice = price.replace(/[^0-9.]/g, "");
 
       await actor.submitOrder({
         username: currentUser.username,
         minecraftUsername: minecraftUsername.trim(),
         itemName,
-        price,
+        price: numericPrice,
         screenshotUrl: base64DataUrl,
         timestamp: BigInt(Date.now()),
         status: OrderStatus.pending,

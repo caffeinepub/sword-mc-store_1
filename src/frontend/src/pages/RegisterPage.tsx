@@ -31,6 +31,12 @@ export default function RegisterPage({ navigate, onLogin }: RegisterPageProps) {
       setIsProcessing(true);
       setError("");
       try {
+        // Register as regular user
+        try {
+          await actorInstance._initializeAccessControlWithSecret("user_secret");
+        } catch {
+          // Already initialized -- continue
+        }
         const profile: UserProfile = {
           username: username.trim(),
           email: email.trim(),
