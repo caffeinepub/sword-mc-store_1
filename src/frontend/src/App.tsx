@@ -4,6 +4,7 @@ import { useInternetIdentity } from "@/hooks/useInternetIdentity";
 import { useCallerProfile, useIsCallerAdmin } from "@/hooks/useQueries";
 import { useCallback, useEffect, useState } from "react";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLoginPage from "./pages/AdminLoginPage";
 import CoinsPage from "./pages/CoinsPage";
 import ContentEditorPage from "./pages/ContentEditorPage";
 import HomePage from "./pages/HomePage";
@@ -18,12 +19,14 @@ export type Page =
   | "login"
   | "register"
   | "admin"
-  | "editor";
+  | "editor"
+  | "adminlogin";
 
 export default function App() {
   const [page, setPage] = useState<Page>("home");
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminPasswordVerified, setAdminPasswordVerified] = useState(false);
   const { identity } = useInternetIdentity();
 
   const profileQuery = useCallerProfile();
@@ -106,14 +109,20 @@ export default function App() {
       {page === "register" && (
         <RegisterPage navigate={setPage} onLogin={handleLogin} />
       )}
-      {page === "admin" && isAdmin && (
+      {page === "adminlogin" && (
+        <AdminLoginPage
+          navigate={setPage}
+          onAdminVerified={() => setAdminPasswordVerified(true)}
+        />
+      )}
+      {page === "admin" && (isAdmin || adminPasswordVerified) && (
         <AdminDashboard
           navigate={setPage}
           currentUser={currentUser}
           onLogout={handleLogout}
         />
       )}
-      {page === "admin" && !isAdmin && (
+      {page === "admin" && !isAdmin && !adminPasswordVerified && (
         <div className="min-h-screen flex items-center justify-center">
           <p
             className="font-pixel text-xs"
@@ -123,14 +132,14 @@ export default function App() {
           </p>
         </div>
       )}
-      {page === "editor" && isAdmin && (
+      {page === "editor" && (isAdmin || adminPasswordVerified) && (
         <ContentEditorPage
           navigate={setPage}
           currentUser={currentUser}
           onLogout={handleLogout}
         />
       )}
-      {page === "editor" && !isAdmin && (
+      {page === "editor" && !isAdmin && !adminPasswordVerified && (
         <div className="min-h-screen flex items-center justify-center">
           <p
             className="font-pixel text-xs"

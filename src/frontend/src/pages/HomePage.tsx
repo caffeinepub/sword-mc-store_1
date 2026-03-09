@@ -384,6 +384,21 @@ export default function HomePage({
             caffeine.ai
           </a>
         </p>
+        {/* Subtle admin entry — intentionally dim so regular users ignore it */}
+        <button
+          type="button"
+          data-ocid="home.admin_link"
+          onClick={() => navigate("adminlogin")}
+          className="mt-2 font-pixel transition-opacity hover:opacity-60"
+          style={{
+            fontSize: "8px",
+            color: "oklch(0.28 0.03 145)",
+            opacity: 0.4,
+            letterSpacing: "0.1em",
+          }}
+        >
+          admin
+        </button>
       </footer>
     </div>
   );

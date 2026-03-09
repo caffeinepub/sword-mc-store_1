@@ -1,43 +1,37 @@
 # SWORD MC Store
 
 ## Current State
-
-Full-stack Minecraft store with:
-- Home, Ranks, Coins pages
-- Player login/register system
-- UPI payment modal with QR code, UPI ID, and Transaction ID input field
-- Admin dashboard showing orders with TX ID column
-- Content editor for admins
-- Backend Order type has: username, itemName, price, transactionId, timestamp, status
+- Website has Home, Ranks, Coins, Login, Register, Admin Dashboard, and Content Editor pages
+- Admin access requires Internet Identity (II) login + hardcoded username `arpit20102010` / password `arpit2010`
+- II popup causes "connecting error" issues for the admin
+- Admin Dashboard shows orders with approve/reject/delete actions
+- Content Editor allows editing ranks, coins, server IP, Discord link
 
 ## Requested Changes (Diff)
 
 ### Add
-- Minecraft username input field in UPI payment modal (player enters their MC username)
-- Screenshot upload field in UPI payment modal (player uploads payment screenshot as base64 image)
-- Admin dashboard: screenshot preview/link column and minecraft username column
+- New dedicated **Admin Login Page** (`AdminLoginPage`) accessible via a secret URL or button
+- This page has a single password field -- if the user types `arpit2010` and submits, they get full admin access
+- No Internet Identity popup required for this admin entry path
+- Admin Panel accessible after password entry: shows Orders Dashboard + Editor access (same AdminDashboard and ContentEditorPage)
+- A new route `"adminlogin"` added to App.tsx Page type and routing
 
 ### Modify
-- UPI payment modal: remove Transaction ID input, add Minecraft username input + screenshot upload
-- Backend Order type: remove `transactionId`, add `minecraftUsername: Text` and `screenshotUrl: Text`
-- Admin dashboard table: replace TX ID column with Minecraft Username + Screenshot columns
-- submitOrder backend function: accept updated Order type without transactionId
+- App.tsx: Add `"adminlogin"` to Page type, add route rendering for `AdminLoginPage`
+- App.tsx: When admin password is verified locally (no II needed), set `isAdmin = true` and navigate to `"admin"`
+- AdminDashboard header: Add back-navigation to `"adminlogin"` instead of requiring II logout
+- HomePage (or nav): Add a hidden/subtle link (e.g. small "Admin" text in footer or nav) that navigates to `"adminlogin"`
 
 ### Remove
-- Transaction ID input from payment modal
-- transactionId field from Order type
-- TX ID column from admin orders table
+- Nothing removed -- existing Login page stays for regular players
 
 ## Implementation Plan
-
-1. Regenerate backend Motoko with updated Order type (minecraftUsername, screenshotUrl instead of transactionId)
-2. Update UpiPaymentModal:
-   - Add Minecraft username text input (required)
-   - Add screenshot file upload (accepts image files, converts to base64 data URL, required)
-   - Remove transaction ID input
-   - Pass minecraftUsername and screenshotUrl in submitOrder call
-3. Update AdminDashboard:
-   - Replace TX ID column header with MC USERNAME and SCREENSHOT
-   - Show minecraftUsername in MC USERNAME column
-   - Show clickable thumbnail/link for screenshotUrl in SCREENSHOT column
-   - Update table row key to not use transactionId
+1. Create `AdminLoginPage.tsx` -- simple password form, on correct password (`arpit2010`) set admin flag and go to admin dashboard
+2. Add `"adminlogin"` to Page type in App.tsx
+3. Add state for `adminPasswordVerified` in App.tsx; when true, render AdminDashboard without II check
+4. Pass `setAdminPasswordVerified` callback to AdminLoginPage
+5. Update App.tsx routing: `page === "adminlogin"` renders AdminLoginPage
+6. Update App.tsx: `page === "admin"` renders AdminDashboard if `isAdmin || adminPasswordVerified`
+7. Update App.tsx: `page === "editor"` renders ContentEditorPage if `isAdmin || adminPasswordVerified`
+8. Add subtle "ADMIN" link in HomePage footer area
+9. Add deterministic `data-ocid` markers to all new interactive elements
